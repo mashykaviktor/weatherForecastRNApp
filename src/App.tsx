@@ -3,7 +3,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {ErrorBoundary} from 'react-error-boundary';
 import {View, Text, StyleSheet} from 'react-native';
 import {LogBox} from 'react-native';
-
 import Navigation from './navigate';
 
 function App() {
