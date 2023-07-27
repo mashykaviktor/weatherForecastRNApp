@@ -18,6 +18,8 @@ import {
 } from '../../apis/api';
 import * as Yup from 'yup';
 import uuid from 'react-native-uuid';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import styles from './styles';
 
@@ -309,6 +311,16 @@ const HomeScreen = props => {
             props.navigation.navigate('Forecast');
           }}>
           <Text>Go to Forecast</Text>
+          <MaterialCommunityIcons
+            name="weather-partly-cloudy"
+            size={30}
+            color="#3E726E"
+          />
+          <MaterialCommunityIcons
+            name="weather-cloudy-clock"
+            size={30}
+            color="#3E726E"
+          />
         </TouchableOpacity>
         <Text style={styles.text}>Add your current location</Text>
         <TextInput
