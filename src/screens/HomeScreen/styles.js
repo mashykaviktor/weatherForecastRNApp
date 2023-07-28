@@ -33,6 +33,7 @@ export default StyleSheet.create({
   error: {
     color: 'red',
     marginBottom: 10,
+    textAlign: 'center',
   },
   text: {
     marginTop: 16,
@@ -55,5 +56,20 @@ export default StyleSheet.create({
       android: {borderColor: '#FF6C00', backgroundColor: '#FF6C00'},
     }),
     borderRadius: 8,
+  },
+  icon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    margin: 5,
+    // borderRadius: 100,
+    // borderWidth: 1,
+    // borderColor: "#fefefe",
+    // backgroundColor: "#192f6a",
+    // overflow: 'hidden',
+    // height: 60,
+    // width: 60,
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
 });

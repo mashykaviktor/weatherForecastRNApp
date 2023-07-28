@@ -8,14 +8,14 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 //   DrawerItem,
 // } from '@react-navigation/drawer';
 import {HomeScreen, ForecastScreen} from '../screens';
-import {useNavigation, DrawerActions} from '@react-navigation/native';
-import {Button, Text, View, Linking} from 'react-native';
+// import {useNavigation, DrawerActions} from '@react-navigation/native';
+// import {Button, Text, View, Linking} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 // const Drawer = createDrawerNavigator();
 
 const Navigation = () => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   useEffect(() => {}, []);
 
