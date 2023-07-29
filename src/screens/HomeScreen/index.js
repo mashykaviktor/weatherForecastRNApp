@@ -22,6 +22,8 @@ import uuid from 'react-native-uuid';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import styles from './styles';
 
 const initialState = {
@@ -41,6 +43,7 @@ const favoriteLocationValidationSchema = Yup.object().shape({
     .required('Title is required')
     .min(4, 'Title must be at least 4 characters'),
 });
+
 const HomeScreen = props => {
   // console.log('props: ', props);
   const [errors, setErrors] = useState({});
@@ -59,7 +62,18 @@ const HomeScreen = props => {
   const year = date.getFullYear(); // Full 4-digit year (e.g., 2023)
 
   useEffect(() => {
-    let coord = currentLocationData.location;
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('currentLocation');
+        console.log('jsonValue: ', JSON.parse(jsonValue));
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      } catch (error) {
+        // error reading value
+        throw new Error(error);
+      }
+    };
+    // getData();
+    // let coord = currentLocationData.location;
     const getWeatherByLocation = async coord => {
       try {
         setIsLoading(true);
@@ -75,8 +89,43 @@ const HomeScreen = props => {
         setIsLoading(false);
       }
     };
-    getWeatherByLocation(coord);
+    // getWeatherByLocation(coord);
+
+    getData().then(data => {
+      console.log('data from getData: ', data);
+      getWeatherByLocation(data?.location);
+    });
   }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('favoriteLocations');
+        console.log('jsonValue: ', JSON.parse(jsonValue));
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      } catch (error) {
+        // error reading value
+        throw new Error(error);
+      }
+    };
+    getData().then(data => {
+      setFavoriteLocationsData(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    // add to storage
+    const storeData = async () => {
+      try {
+        const jsonValue = JSON.stringify(favoriteLocationsData);
+        await AsyncStorage.setItem('favoriteLocations', jsonValue);
+      } catch (error) {
+        // saving error
+        throw new Error(error);
+      }
+    };
+    storeData();
+  }, [favoriteLocationsData]);
 
   useEffect(() => {
     // LocationHelper.checkLocationPermission(
@@ -123,6 +172,18 @@ const HomeScreen = props => {
               title: inputCurrentLocation,
               location: location,
             };
+
+            // add to storage
+            const storeData = async () => {
+              try {
+                const jsonValue = JSON.stringify(newLocationRecord);
+                await AsyncStorage.setItem('currentLocation', jsonValue);
+              } catch (error) {
+                // saving error
+                throw new Error(error);
+              }
+            };
+            storeData();
 
             setCurrentLocationData(newLocationRecord); // add current location to state
             setInputCurrentLocation('');
@@ -318,7 +379,7 @@ const HomeScreen = props => {
           style={styles.input}
           onChangeText={changeText => setInputFavoriteLocation(changeText)}
           value={inputFavoriteLocation}
-          placeholder="Enter city name, post code or address..."
+          placeholder="Enter city name..."
         />
         {errors.inputFavoriteLocation && (
           <Text style={styles.error}>{errors.inputFavoriteLocation}</Text>
