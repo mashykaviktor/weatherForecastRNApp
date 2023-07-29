@@ -17,6 +17,9 @@ import {
   fetchCoordinatesByCityName,
   fetchForecastByLocation,
 } from '../../apis/api';
+
+import LocationHelper from '../../helpers/LocationManager';
+
 import * as Yup from 'yup';
 import uuid from 'react-native-uuid';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -53,6 +56,9 @@ const HomeScreen = props => {
   const [currentLocationData, setCurrentLocationData] = useState(initialState);
   const [inputCurrentLocation, setInputCurrentLocation] = useState('');
   const [inputFavoriteLocation, setInputFavoriteLocation] = useState('');
+  const [locationObject, setLocationObject] = useState(undefined);
+
+  console.log('locationObject: ', locationObject);
 
   const date = new Date();
   const minutes = date.getMinutes();
@@ -60,6 +66,20 @@ const HomeScreen = props => {
   const day = date.getDate(); // Day of the month (e.g., 1, 2, 3, ..., 31)
   const month = date.getMonth() + 1; // Month (e.g., 1 for January, 2 for February, ..., 12 for December)
   const year = date.getFullYear(); // Full 4-digit year (e.g., 2023)
+
+  useEffect(() => {
+    LocationHelper.checkLocationPermission(
+      () => {
+        LocationHelper.fetchLocation(
+          locationObject => {
+            setLocationObject(locationObject);
+          },
+          error => {},
+        );
+      },
+      () => {},
+    );
+  }, []);
 
   useEffect(() => {
     const getData = async () => {
@@ -126,21 +146,6 @@ const HomeScreen = props => {
     };
     storeData();
   }, [favoriteLocationsData]);
-
-  useEffect(() => {
-    // LocationHelper.checkLocationPermission(
-    //   () => {
-    //     LocationHelper.trackUserLocation(
-    //       locationObject => {
-    //         setLocationObject(locationObject);
-    //         console.log('AddLocationsScreen=>locationObject: ', locationObject);
-    //       },
-    //       error => {},
-    //     );
-    //   },
-    //   () => {},
-    // );
-  }, []);
 
   const handleCurrentLocationSubmit = () => {
     currentLocationValidationSchema
