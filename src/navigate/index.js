@@ -1,29 +1,40 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-// import {
-//   createDrawerNavigator,
-//   DrawerContentScrollView,
-//   DrawerItemList,
-//   DrawerItem,
-// } from '@react-navigation/drawer';
 import {HomeScreen, ForecastScreen} from '../screens';
-// import {useNavigation, DrawerActions} from '@react-navigation/native';
-// import {Button, Text, View, Linking} from 'react-native';
 
 const Stack = createNativeStackNavigator();
-// const Drawer = createDrawerNavigator();
 
 const Navigation = () => {
-  // const navigation = useNavigation();
-
-  useEffect(() => {}, []);
-
   const getMainStack = () => {
     return (
       <Stack.Group>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Forecast" component={ForecastScreen} />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: 'Weather',
+            headerStyle: {backgroundColor: '#192f6a'},
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontFamily: 'Montserrat',
+              fontSize: 16,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Forecast"
+          component={ForecastScreen}
+          options={{
+            title: 'Forecast',
+            headerStyle: {backgroundColor: '#192f6a'},
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontFamily: 'Montserrat',
+              fontSize: 16,
+            },
+          }}
+        />
       </Stack.Group>
     );
   };

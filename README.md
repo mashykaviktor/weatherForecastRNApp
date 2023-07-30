@@ -1,38 +1,33 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Weather Forecast App
+
+This is a Weather Forecast App built with React Native that provides real-time weather information for the user's current location and a 5-day weather forecast. The app makes use of the OpenWeatherMap API to fetch weather data for different locations.
+
+# Features
+
+# Before running the app, make sure you have the following installed:
+
+Node.js and npm
+React Native CLI
+Xcode (for iOS development) or Android Studio (for Android development)
 
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+Clone the repository:
 
-## Step 1: Start the Metro Server
+git clone https://github.com/your-username/weather-forecast-app.git
+cd weather-forecast-app
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
+Install dependencies:
 
 ```bash
 # using npm
-npm run android
+npm install
 
 # OR using Yarn
-yarn android
+yarn install
 ```
 
-### For iOS
+## For iOS
 
 ```bash
 # using npm
@@ -42,39 +37,22 @@ npm run ios
 yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## For Android
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+```bash
+# using npm
+npm run android
 
-## Step 3: Modifying your App
+# OR using Yarn
+yarn android
+```
 
-Now that you have successfully run the app, let's modify it.
+## Usage
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+Once the app is running, you will see the Weather screen displaying the current weather conditions for your current location. To view the 5-day weather forecast, navigate to the Forecast screen by tapping on the corresponding button in the bottom navigation.
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+To search for weather conditions in a different location, use the search bar on the Weather screen. Type the city name, and the app will display the weather information for the searched location.
+
+All the cities you enter will be saved. When entering a city that was already in your list, it will not be saved again. The saved cities will be displayed on the Weather screen under the search box for quick access to their weather conditions.
 
 ## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
-# weatherForecastRNApp
