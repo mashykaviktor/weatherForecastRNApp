@@ -29,17 +29,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './styles';
 
-const initialState = {
-  id: '',
-  location: {lat: 51.5073219, lon: -0.1276474}, // coord London by default
-  title: '',
-};
+// const initialState = {
+//   id: '',
+//   location: {lat: 51.5073219, lon: -0.1276474}, // coord London by default
+//   title: '',
+// };
 
-const currentLocationValidationSchema = Yup.object().shape({
-  inputCurrentLocation: Yup.string()
-    .required('Title is required')
-    .min(4, 'Title must be at least 4 characters'),
-});
+// const currentLocationValidationSchema = Yup.object().shape({
+//   inputCurrentLocation: Yup.string()
+//     .required('Title is required')
+//     .min(4, 'Title must be at least 4 characters'),
+// });
 
 const favoriteLocationValidationSchema = Yup.object().shape({
   inputFavoriteLocation: Yup.string()
@@ -53,18 +53,19 @@ const HomeScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [weather, setWeather] = useState(null);
   const [favoriteLocationsData, setFavoriteLocationsData] = useState([]);
-  const [currentLocationData, setCurrentLocationData] = useState(initialState);
-  const [inputCurrentLocation, setInputCurrentLocation] = useState('');
+  // const [currentLocationData, setCurrentLocationData] = useState(initialState);
+  // const [inputCurrentLocation, setInputCurrentLocation] = useState('');
   const [inputFavoriteLocation, setInputFavoriteLocation] = useState('');
   const [locationObject, setLocationObject] = useState(undefined);
+  const [timestamp, setTimestamp] = useState(Date.now());
 
   console.log('locationObject: ', locationObject);
 
   const date = new Date();
-  const minutes = date.getMinutes();
-  const hours = date.getHours();
-  const day = date.getDate(); // Day of the month (e.g., 1, 2, 3, ..., 31)
-  const month = date.getMonth() + 1; // Month (e.g., 1 for January, 2 for February, ..., 12 for December)
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const hours = date.getHours().toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0'); // Day of the month (e.g., 1, 2, 3, ..., 31)
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month (e.g., 1 for January, 2 for February, ..., 12 for December)
   const year = date.getFullYear(); // Full 4-digit year (e.g., 2023)
 
   useEffect(() => {
@@ -72,9 +73,15 @@ const HomeScreen = props => {
       () => {
         LocationHelper.fetchLocation(
           locationObject => {
-            setLocationObject(locationObject);
+            const location = {
+              lat: locationObject?.latitude,
+              lon: locationObject?.longitude,
+            };
+            setLocationObject(location);
           },
-          error => {},
+          error => {
+            throw new Error(error);
+          },
         );
       },
       () => {},
@@ -82,18 +89,6 @@ const HomeScreen = props => {
   }, []);
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('currentLocation');
-        console.log('jsonValue: ', JSON.parse(jsonValue));
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      } catch (error) {
-        // error reading value
-        throw new Error(error);
-      }
-    };
-    // getData();
-    // let coord = currentLocationData.location;
     const getWeatherByLocation = async coord => {
       try {
         setIsLoading(true);
@@ -109,13 +104,44 @@ const HomeScreen = props => {
         setIsLoading(false);
       }
     };
-    // getWeatherByLocation(coord);
+    getWeatherByLocation(locationObject);
+  }, [locationObject, timestamp]);
 
-    getData().then(data => {
-      console.log('data from getData: ', data);
-      getWeatherByLocation(data?.location);
-    });
-  }, []);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const jsonValue = await AsyncStorage.getItem('currentLocation');
+  //       console.log('jsonValue: ', JSON.parse(jsonValue));
+  //       return jsonValue != null ? JSON.parse(jsonValue) : null;
+  //     } catch (error) {
+  //       // error reading value
+  //       throw new Error(error);
+  //     }
+  //   };
+  //   // getData();
+  //   // let coord = currentLocationData.location;
+  //   const getWeatherByLocation = async coord => {
+  //     try {
+  //       setIsLoading(true);
+  //       const result = await fetchWeatherByLocation(
+  //         // controller.signal,
+  //         coord,
+  //       );
+  //       console.log('result of getWeatherByLocation: ', result);
+  //       setWeather(result);
+  //     } catch (error) {
+  //       throw new Error(error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   // getWeatherByLocation(coord);
+
+  //   getData().then(data => {
+  //     console.log('data from getData: ', data);
+  //     getWeatherByLocation(data?.location);
+  //   });
+  // }, []);
 
   useEffect(() => {
     const getData = async () => {
@@ -147,93 +173,93 @@ const HomeScreen = props => {
     storeData();
   }, [favoriteLocationsData]);
 
-  const handleCurrentLocationSubmit = () => {
-    currentLocationValidationSchema
-      .validate({inputCurrentLocation}, {abortEarly: false})
-      .then(() => {
-        console.log('Form is valid');
-        // Handle user form logic here
-        if (!inputCurrentLocation) {
-          return;
-        }
-        // find lat and lon for location data
-        const controller = new AbortController();
-        const getCoordinatesByCityName = async () => {
-          try {
-            setIsLoading(true);
-            const result = await fetchCoordinatesByCityName(
-              inputCurrentLocation,
-            );
-            // console.log(
-            //   'result of getCoordinatesByCityName in handle: ',
-            //   result,
-            // );
-            const lat = result[0]?.lat;
-            const lon = result[0]?.lon;
-            const location = {lat: lat, lon: lon};
+  // const handleCurrentLocationSubmit = () => {
+  //   currentLocationValidationSchema
+  //     .validate({inputCurrentLocation}, {abortEarly: false})
+  //     .then(() => {
+  //       console.log('Form is valid');
+  //       // Handle user form logic here
+  //       if (!inputCurrentLocation) {
+  //         return;
+  //       }
+  //       // find lat and lon for location data
+  //       const controller = new AbortController();
+  //       const getCoordinatesByCityName = async () => {
+  //         try {
+  //           setIsLoading(true);
+  //           const result = await fetchCoordinatesByCityName(
+  //             inputCurrentLocation,
+  //           );
+  //           // console.log(
+  //           //   'result of getCoordinatesByCityName in handle: ',
+  //           //   result,
+  //           // );
+  //           const lat = result[0]?.lat;
+  //           const lon = result[0]?.lon;
+  //           const location = {lat: lat, lon: lon};
 
-            const newLocationRecord = {
-              id: uuid.v4(),
-              title: inputCurrentLocation,
-              location: location,
-            };
+  //           const newLocationRecord = {
+  //             id: uuid.v4(),
+  //             title: inputCurrentLocation,
+  //             location: location,
+  //           };
 
-            // add to storage
-            const storeData = async () => {
-              try {
-                const jsonValue = JSON.stringify(newLocationRecord);
-                await AsyncStorage.setItem('currentLocation', jsonValue);
-              } catch (error) {
-                // saving error
-                throw new Error(error);
-              }
-            };
-            storeData();
+  //           // add to storage
+  //           const storeData = async () => {
+  //             try {
+  //               const jsonValue = JSON.stringify(newLocationRecord);
+  //               await AsyncStorage.setItem('currentLocation', jsonValue);
+  //             } catch (error) {
+  //               // saving error
+  //               throw new Error(error);
+  //             }
+  //           };
+  //           storeData();
 
-            setCurrentLocationData(newLocationRecord); // add current location to state
-            setInputCurrentLocation('');
-            // console.log(`location: ${location.lat}, ${location.lon}`);
-            return location;
-          } catch (error) {
-            throw new Error(error);
-          } finally {
-            setIsLoading(false);
-          }
-        };
+  //           setCurrentLocationData(newLocationRecord); // add current location to state
+  //           setInputCurrentLocation('');
+  //           // console.log(`location: ${location.lat}, ${location.lon}`);
+  //           return location;
+  //         } catch (error) {
+  //           throw new Error(error);
+  //         } finally {
+  //           setIsLoading(false);
+  //         }
+  //       };
 
-        const getWeatherByLocation = async data => {
-          try {
-            setIsLoading(true);
-            const result = await fetchWeatherByLocation(
-              // controller.signal,
-              data,
-            );
-            // console.log('result of getWeatherByLocation: ', result);
-            setWeather(result);
-          } catch (error) {
-            throw new Error(error);
-          } finally {
-            setIsLoading(false);
-          }
-        };
+  //       const getWeatherByLocation = async data => {
+  //         try {
+  //           setIsLoading(true);
+  //           const result = await fetchWeatherByLocation(
+  //             // controller.signal,
+  //             data,
+  //           );
+  //           // console.log('result of getWeatherByLocation: ', result);
+  //           setWeather(result);
+  //         } catch (error) {
+  //           throw new Error(error);
+  //         } finally {
+  //           setIsLoading(false);
+  //         }
+  //       };
 
-        getCoordinatesByCityName().then(data => {
-          // console.log('data from getCoordinatesByCityName: ', data);
-          getWeatherByLocation(data);
-        });
+  //       getCoordinatesByCityName().then(data => {
+  //         // console.log('data from getCoordinatesByCityName: ', data);
+  //         getWeatherByLocation(data);
+  //       });
 
-        return () => {
-          controller.abort();
-        };
-      })
-      .catch(err => {
-        const newErrors = {};
-        err.inner.forEach(error => {
-          newErrors[error.path] = error.message;
-        });
-        setErrors(newErrors);
-      });
-  };
+  //       return () => {
+  //         controller.abort();
+  //       };
+  //     })
+  //     .catch(err => {
+  //       const newErrors = {};
+  //       err.inner.forEach(error => {
+  //         newErrors[error.path] = error.message;
+  //       });
+  //       setErrors(newErrors);
+  //     });
+  // };
 
   const handleFavoriteLocationSubmit = () => {
     favoriteLocationValidationSchema
@@ -356,13 +382,20 @@ const HomeScreen = props => {
   };
 
   console.log('Home=>weather: ', weather);
-  console.log('Home=>currentLocationData: ', currentLocationData);
+  // console.log('Home=>currentLocationData: ', currentLocationData);
   console.log('Home=>favoriteLocationsData: ', favoriteLocationsData);
 
   return (
     <ScrollView style={{flex: 1}}>
       <View style={styles.container}>
-        <Text style={styles.text}>Add your current location</Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            setTimestamp(Date.now());
+          }}>
+          <Text style={styles.text}>My geoposition</Text>
+        </TouchableOpacity>
+        {/* <Text style={styles.text}>Add your current location</Text>
         <View style={{flex: 1}}>
           <TextInput
             style={styles.input}
@@ -378,8 +411,8 @@ const HomeScreen = props => {
           {errors.inputCurrentLocation && (
             <Text style={styles.error}>{errors.inputCurrentLocation}</Text>
           )}
-        </View>
-        <Text style={styles.text}>Add favorite location</Text>
+        </View> */}
+        {/* <Text style={styles.text}>Add favorite location</Text> */}
         <TextInput
           style={styles.input}
           onChangeText={changeText => setInputFavoriteLocation(changeText)}
@@ -395,40 +428,62 @@ const HomeScreen = props => {
           <Text style={styles.text}>Submit</Text>
         </TouchableOpacity>
       </View>
-      <ScrollView horizontal style={{flex: 1}}>
-        {favoriteLocationsData &&
-          favoriteLocationsData.length > 0 &&
-          favoriteLocationsData.map((item, index) => {
-            return (
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    handleSavedLocationSubmit(item?.location);
+      <View style={styles.container}>
+        <ScrollView horizontal style={{flex: 1}}>
+          {favoriteLocationsData &&
+            favoriteLocationsData.length > 0 &&
+            favoriteLocationsData.map((item, index) => {
+              return (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 5,
                   }}>
-                  <Text style={styles.text}>{item?.title} </Text>
-                </TouchableOpacity>
-              </View>
-            );
-          })}
-      </ScrollView>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleSavedLocationSubmit(item?.location);
+                    }}>
+                    <Text style={styles.textUnderline}>{item?.title} </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+        </ScrollView>
+      </View>
       {weather && weather !== null && (
         <View style={styles.container}>
           <Text style={styles.title}>{weather?.name ?? ''}</Text>
           <Text style={styles.title}>
             {`${year}-${month}-${day} ${hours}:${minutes}`}
           </Text>
-          <Text style={styles.text}>{weather?.weather[0]?.main ?? ''}</Text>
           <Text style={styles.text}>
-            Temperature: {weather?.main?.temp ?? ''}&#176;C
+            {weather?.weather[0]?.main ?? ''} {': '}
+            {weather?.weather[0]?.description ?? ''}
           </Text>
           <Text style={styles.text}>
-            Wind speed: {weather?.wind?.speed ?? ''}
+            Temperature: {Math.round(weather?.main?.temp) ?? ''}&#176;C
+          </Text>
+          <Text style={styles.text}>
+            Temp feels like: {Math.round(weather?.main?.feels_like) ?? ''}
+            &#176;C
+          </Text>
+          <Text style={styles.text}>
+            Temp max: {Math.round(weather?.main?.temp_max) ?? ''}&#176;C
+          </Text>
+          <Text style={styles.text}>
+            Temp min: {Math.round(weather?.main?.temp_min) ?? ''}&#176;C
+          </Text>
+          <Text style={styles.text}>
+            Wind speed: {Math.round(weather?.wind?.speed) ?? ''} meter/sec
+          </Text>
+          <Text style={styles.text}>
+            Pressure: {Math.round(weather?.main?.pressure) ?? ''} hPa
+          </Text>
+          <Text style={styles.text}>
+            Humidity: {Math.round(weather?.main?.humidity) ?? ''} %
           </Text>
           <TouchableOpacity
             style={styles.button}
