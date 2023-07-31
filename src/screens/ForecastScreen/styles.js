@@ -43,4 +43,9 @@ export default StyleSheet.create({
     width: 300,
     marginVertical: 8,
   },
+  listEmpty: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
