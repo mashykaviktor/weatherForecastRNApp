@@ -12,6 +12,8 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 import {
@@ -67,10 +69,11 @@ const HomeScreen = props => {
   }, []);
 
   useEffect(() => {
-    const getWeatherByLocation = async coord => {
+    const controller = new AbortController();
+    const getWeatherByLocation = async (coord, signal) => {
       try {
         setIsLoading(true);
-        const result = await fetchWeatherByLocation(coord);
+        const result = await fetchWeatherByLocation(coord, controller.signal);
         setWeather(result);
       } catch (error) {
         throw new Error(error);
@@ -79,6 +82,10 @@ const HomeScreen = props => {
       }
     };
     getWeatherByLocation(locationObject);
+
+    return () => {
+      controller.abort();
+    };
   }, [locationObject, timestamp]);
 
   useEffect(() => {
@@ -126,6 +133,7 @@ const HomeScreen = props => {
             setIsLoading(true);
             const result = await fetchCoordinatesByCityName(
               inputFavoriteLocation,
+              controller.signal,
             );
             const name = result[0]?.name;
             const lat = result[0]?.lat;
@@ -158,7 +166,10 @@ const HomeScreen = props => {
         const getWeatherByLocation = async data => {
           try {
             setIsLoading(true);
-            const result = await fetchWeatherByLocation(data);
+            const result = await fetchWeatherByLocation(
+              data,
+              controller.signal,
+            );
             setWeather(result);
           } catch (error) {
             throw new Error(error);
@@ -215,11 +226,11 @@ const HomeScreen = props => {
   };
 
   return (
-    <LinearGradient
-      colors={['#4c669f', '#3b5998', '#192f6a']}
-      style={styles.linearGradient}>
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.container}>
-        <View style={styles.container}>
+        <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             onChangeText={changeText => setInputFavoriteLocation(changeText)}
@@ -243,7 +254,7 @@ const HomeScreen = props => {
               <Text style={styles.text}>Search</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal style={{flex: 1}}>
+          <ScrollView horizontal>
             {favoriteLocationsData &&
               favoriteLocationsData.length > 0 &&
               favoriteLocationsData.map((item, index) => {
@@ -318,7 +329,7 @@ const HomeScreen = props => {
           />
         )}
       </View>
-    </LinearGradient>
+    </KeyboardAvoidingView>
   );
 };
 

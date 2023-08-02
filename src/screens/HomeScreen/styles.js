@@ -5,6 +5,14 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#4c669f',
+    padding: 16,
+  },
+  inputContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
   },
   form: {flex: 2.5, justifyContent: 'center', alignItems: 'center'},
   title: {
@@ -63,8 +71,19 @@ export default StyleSheet.create({
     gap: 12,
     borderWidth: 1,
     ...Platform.select({
-      ios: {borderColor: '#FF6C00', backgroundColor: 'transparent'},
-      android: {borderColor: '#FF6C00', backgroundColor: '#FF6C00'},
+      ios: {
+        borderColor: '#3b5998',
+        backgroundColor: '#3b5998',
+        shadowColor: '#3b5998',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
+      },
+      android: {
+        borderColor: '#3b5998',
+        backgroundColor: '#3b5998',
+        elevation: 4,
+      },
     }),
     borderRadius: 8,
   },
@@ -74,8 +93,19 @@ export default StyleSheet.create({
     gap: 12,
     borderWidth: 1,
     ...Platform.select({
-      ios: {borderColor: '#FF6C00', backgroundColor: 'transparent'},
-      android: {borderColor: '#FF6C00', backgroundColor: '#FF6C00'},
+      ios: {
+        borderColor: '#3b5998',
+        backgroundColor: '#3b5998',
+        shadowColor: '#3b5998',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.8,
+        shadowRadius: 4,
+      },
+      android: {
+        borderColor: '#3b5998',
+        backgroundColor: '#3b5998',
+        elevation: 4,
+      },
     }),
     borderRadius: 8,
     marginVertical: 10,
@@ -86,11 +116,6 @@ export default StyleSheet.create({
     top: 5,
     right: 5,
     margin: 5,
-  },
-  linearGradient: {
-    width: '100%',
-    height: '100%',
-    padding: 16,
   },
   contentContainer: {
     flex: 1,
