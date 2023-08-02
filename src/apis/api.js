@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {API_KEY} from './api_config';
+import {Alert} from 'react-native';
 
 let limit = 5; // {limit}
 
@@ -15,6 +16,9 @@ export const fetchWeatherByLocation = async (data, signal) => {
     if (axios.isCancel(error)) {
       return [];
     }
+    if (error.code === 'ERR_BAD_REQUEST') {
+      Alert.alert('Error', 'Bad request!');
+    }
     throw new Error(error);
   }
 };
@@ -29,6 +33,9 @@ export const fetchCoordinatesByCityName = async (location, signal) => {
     if (axios.isCancel(error)) {
       return [];
     }
+    if (error.code === 'ERR_BAD_REQUEST') {
+      Alert.alert('Error', 'Bad request!');
+    }
     throw new Error(error);
   }
 };
@@ -42,6 +49,9 @@ export const fetchForecastByLocation = async (coord, signal) => {
   } catch (error) {
     if (axios.isCancel(error)) {
       return [];
+    }
+    if (error.code === 'ERR_BAD_REQUEST') {
+      Alert.alert('Error', 'Bad request!');
     }
     throw new Error(error);
   }
